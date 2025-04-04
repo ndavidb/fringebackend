@@ -85,10 +85,17 @@ builder.Services.AddScoped<IAuthService, AuthService>();
 // Add CORS policy
 builder.Services.AddCors(options =>
 {
-    options.AddPolicy("AllowAll",
-        policy => policy.AllowAnyOrigin()
+    options.AddPolicy("FrontendPolicy",
+        policy => policy
+            .WithOrigins(
+                //Local development
+                "http://localhost:3000",
+                "http://localhost:3001",
+                //Production
+                "https://fringebooking-dev.azurewebsites.net/")
+            .AllowAnyHeader()
             .AllowAnyMethod()
-            .AllowAnyHeader());
+            .AllowCredentials());
 });
 
 // Add database context
@@ -148,7 +155,7 @@ if (app.Environment.IsDevelopment())
 }
 
 // Enable CORS
-app.UseCors("AllowAll");
+app.UseCors("FrontendPolicy");
 
 // Enable Swagger with more detailed configuration
 app.UseSwagger(c => { c.SerializeAsV2 = false; });
@@ -213,3 +220,5 @@ using (var scope = app.Services.CreateScope())
 }
 
 app.Run();
+
+
