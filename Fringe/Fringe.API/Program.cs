@@ -2,6 +2,7 @@ using System.Text;
 using Fringe.Domain;
 using Fringe.Domain.Entities;
 using Fringe.Domain.Extensions;
+using Fringe.Domain.Seeders;
 using Fringe.Repository;
 using Fringe.Repository.Interfaces;
 using Fringe.Service;
@@ -105,10 +106,12 @@ builder.Services.AddDbContext<FringeDbContext>(options =>
 // Register repositories
 builder.Services.AddScoped<IRoleRepository, RoleRepository>();
 builder.Services.AddScoped<IVenueRepository, VenueRepository>();
+builder.Services.AddScoped<IShowRepository, ShowRepository>();
 
 // Register services
 builder.Services.AddScoped<IRoleService, RoleService>();
 builder.Services.AddScoped<IVenueService, VenueService>();
+builder.Services.AddScoped<IShowService, ShowService>();
 
 // Add Swagger services
 builder.Services.AddEndpointsApiExplorer();
@@ -194,28 +197,14 @@ using (var scope = app.Services.CreateScope())
         dbContext.Database.Migrate();
         Console.WriteLine("Database migrations applied successfully");
         
-        // Seed roles and admin user
-        await DatabaseSeeder.SeedRolesAndAdminAsync(app.Services);
+        
+        await DatabaseSeeder.SeedDatabase(app.Services);
+        
         Console.WriteLine("Database seeding completed successfully");
     }
     catch (Exception ex)
     {
         Console.WriteLine($"An error occurred while seeding Database", ex);
-    }
-}
-
-// Test database connection on startup (Keep until all devs have tested their connection)
-using (var scope = app.Services.CreateScope())
-{
-    var dbContext = scope.ServiceProvider.GetRequiredService<FringeDbContext>();
-    try
-    {
-        bool canConnect = dbContext.Database.CanConnect();
-        Console.WriteLine($"Database connection test: {(canConnect ? "Successful" : "Failed")}");
-    }
-    catch (Exception ex)
-    {
-        Console.WriteLine($"Database connection error: {ex.Message}");
     }
 }
 

@@ -11,6 +11,10 @@ namespace Fringe.Domain
         {
         }
 
+        public DbSet<Show> Shows { get; set; }
+        public DbSet<ShowTypeLookup> ShowTypeLookups { get; set; }
+        public DbSet<AgeRestrictionLookup> AgeRestrictionLookups { get; set; }
+        public DbSet<TicketType> TicketTypes { get; set; }
         public DbSet<Role> Roles { get; set; }
         public DbSet<RefreshToken> RefreshTokens { get; set; }
         // Venues DbSet
