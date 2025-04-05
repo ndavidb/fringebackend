@@ -107,11 +107,13 @@ builder.Services.AddDbContext<FringeDbContext>(options =>
 builder.Services.AddScoped<IRoleRepository, RoleRepository>();
 builder.Services.AddScoped<IVenueRepository, VenueRepository>();
 builder.Services.AddScoped<IShowRepository, ShowRepository>();
+builder.Services.AddScoped<ILocationRepository, LocationRepository>();
 
 // Register services
 builder.Services.AddScoped<IRoleService, RoleService>();
 builder.Services.AddScoped<IVenueService, VenueService>();
 builder.Services.AddScoped<IShowService, ShowService>();
+builder.Services.AddScoped<ILocationService, LocationService>();
 
 // Add Swagger services
 builder.Services.AddEndpointsApiExplorer();
