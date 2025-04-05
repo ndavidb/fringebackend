@@ -1,8 +1,14 @@
-﻿namespace Fringe.Domain.Entities;
+﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
+
+namespace Fringe.Domain.Entities;
 
 // Domain entity representing the Venue details
 public class Venue
 {
+    
+    [Key]
+    [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
     public int VenueId { get; set; }
     public string VenueName { get; set; }
     public int LocationId { get; set; }

@@ -149,6 +149,7 @@ builder.Services.AddSwaggerGen(c =>
     });
 });
 
+builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies()); //AutoMapper registration to map objects
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
