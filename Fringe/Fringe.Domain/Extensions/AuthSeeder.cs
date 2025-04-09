@@ -4,7 +4,7 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace Fringe.Domain.Extensions;
 
-public class DatabaseSeeder
+public class AuthSeeder
 {
     public static async Task SeedRolesAndAdminAsync(IServiceProvider serviceProvider)
     {

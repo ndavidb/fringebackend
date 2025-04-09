@@ -1,5 +1,5 @@
 ﻿using System.Security.Claims;
-using Fringe.Domain.DTOs;
+using Fringe.Domain.DTOs.LocationDTOs;
 using Fringe.Service.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -8,71 +8,53 @@ namespace Fringe.API.Controllers;
 
 [Route("api/[controller]")]
 [ApiController]
-public class VenuesController : ControllerBase
+public class LocationsController : ControllerBase
 {
-    private readonly IVenueService _venueService;
+    private readonly ILocationService _locationService;
     private readonly ILogger<ShowsController> _logger;
 
-    public VenuesController(IVenueService venueService, ILogger<ShowsController> logger)
+    public LocationsController(ILocationService locationService,  ILogger<ShowsController> logger)
     {
-        _venueService = venueService;
+        _locationService = locationService;
         _logger = logger;
     }
     
-
-    /**Retrieves a list of all venues along with their related location and type information.
-    <returns>List of VenueDto</returns> **/
+    // Retrieve all locations
     [HttpGet]
     [ProducesResponseType(StatusCodes.Status200OK)]
-    public async Task<IActionResult> GetAllVenues()
-    {
-        var venues = await _venueService.GetAllVenuesAsync();
-        return Ok(venues);
-    }
-    
-    
-    // Gets a venue by ID
+    public async Task<IActionResult> GetAllLocations() =>
+        Ok(await _locationService.GetAllLocationsAsync());
+
+    // GET - get location by id
     [HttpGet("{id}")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public async Task<IActionResult> GetVenueById(int id)
-    {
-        var venue = await _venueService.GetVenueByIdAsync(id);
-        if (venue == null)
-            return NotFound();
-        return Ok(venue);
-    }
-    
-    
-    // POST - Save a venue record
+    public async Task<IActionResult> GetLocationById(int id) =>
+        Ok(await _locationService.GetLocationByIdAsync(id));
+
+    //POST - save location
     [HttpPost]
     [Authorize(Roles = "Admin,Manager")]
     [ProducesResponseType(StatusCodes.Status201Created)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     [ProducesResponseType(StatusCodes.Status403Forbidden)]
-    public async Task<IActionResult> CreateVenue([FromBody] CreateVenueDto dto)
+    public async Task<IActionResult> CreateLocation([FromBody] CreateLocationDto createLocationDto)
     {
         try
         {
             var creatorUserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            if (string.IsNullOrEmpty(creatorUserId))
-            {
-                return BadRequest("User ID claim is missing");
-            }
-            var createVenue = await _venueService.CreateVenueAsync(dto, creatorUserId);
-            return CreatedAtAction(nameof(GetVenueById), new { id = createVenue.VenueId }, createVenue);
+            var createdLocation = await _locationService.CreateLocationAsync(createLocationDto, creatorUserId);
+            return CreatedAtAction(nameof(GetLocationById), new { id = createdLocation.LocationId }, createdLocation);
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "Error creating venue");
+            _logger.LogError(ex, "Error creating location");
             return BadRequest(ex.Message);
         }
-       
     }
-    
-    
-    //PUT - Updates a venue by ID.</summary>
+
+    //PUT - update location by id
     [HttpPut("{id}")]
     [Authorize(Roles = "Admin,Manager")]
     [ProducesResponseType(StatusCodes.Status200OK)]
@@ -80,53 +62,47 @@ public class VenuesController : ControllerBase
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     [ProducesResponseType(StatusCodes.Status403Forbidden)]
-    public async Task<IActionResult> UpdateVenue(int id, [FromBody] CreateVenueDto dto)
+    public async Task<IActionResult> UpdateShow(int id, [FromBody] CreateLocationDto dto)
     {
         try
         {
             var updaterUserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            var updatedVenue = await _venueService.UpdateVenueAsync(id, dto, updaterUserId);
-            return Ok(updatedVenue);
+            var updatedLocation = await _locationService.UpdateLocationAsync(id, dto, updaterUserId);
+            return Ok(updatedLocation);
         }
         catch (InvalidOperationException ex) when (ex.Message.Contains("not found"))
         {
             return NotFound(ex.Message);
         }
-        catch (InvalidOperationException ex)
+        catch (Exception ex)
         {
-            _logger.LogError(ex, "Error updating venue");
+            _logger.LogError(ex, "Error updating location");
             return BadRequest(ex.Message);
         }
     }
     
     
-    
-    //Deletes a venue by ID
+
+    //DELETE - delete location by id
     [HttpDelete("{id}")]
     [Authorize(Roles = "Admin,Manager")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     [ProducesResponseType(StatusCodes.Status403Forbidden)]
-    public async Task<IActionResult> DeleteVenue(int id)
+    public async Task<IActionResult> Delete(int id)
     {
+        
         try
         {
-            await _venueService.DeleteVenueAsync(id);
+            await _locationService.DeleteLocationAsync(id);
             return NoContent();
         }
         catch (InvalidOperationException ex)
         {
-            _logger.LogError(ex, "Error deleting venue");
+            _logger.LogError(ex, "Error deleting location");
             return NotFound(ex.Message);
         }
     }
-    
-    
-    
-    
-    
-    
-    
     
 }
