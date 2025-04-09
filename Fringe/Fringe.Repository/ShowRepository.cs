@@ -16,7 +16,6 @@ public class ShowRepository : IShowRepository
             .Include(s => s.ShowTypeLookup)
             .Include(s => s.AgeRestrictionLookup)
             .Include(s => s.TicketType)
-            .Where(s => s.Active)
             .ToListAsync();
     }
 
@@ -50,8 +49,7 @@ public class ShowRepository : IShowRepository
         if (show == null)
             return false;
 
-        // Soft delete
-        show.Active = false;
+        _context.Shows.Remove(show);
         return await _context.SaveChangesAsync() > 0;
     }
 

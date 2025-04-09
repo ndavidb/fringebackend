@@ -160,8 +160,7 @@ if (app.Environment.IsDevelopment())
     app.UseDeveloperExceptionPage();
 }
 
-// Enable CORS
-app.UseCors("FrontendPolicy");
+
 
 // Enable Swagger with more detailed configuration
 app.UseSwagger(c => { c.SerializeAsV2 = false; });
@@ -174,8 +173,9 @@ app.UseSwaggerUI(c =>
     c.DocExpansion(Swashbuckle.AspNetCore.SwaggerUI.DocExpansion.List);
 });
 
+// Enable CORS
+app.UseCors("FrontendPolicy");
 app.UseHttpsRedirection();
-
 app.UseAuthentication();
 app.UseAuthorization();
 
