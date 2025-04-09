@@ -93,7 +93,7 @@ builder.Services.AddCors(options =>
                 "http://localhost:3000",
                 "http://localhost:3001",
                 //Production
-                "https://fringebooking-dev.azurewebsites.net/")
+                "https://fringebooking-dev.azurewebsites.net")
             .AllowAnyHeader()
             .AllowAnyMethod()
             .AllowCredentials());
