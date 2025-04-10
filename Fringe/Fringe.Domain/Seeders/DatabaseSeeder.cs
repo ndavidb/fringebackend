@@ -16,5 +16,7 @@ public class DatabaseSeeder
         await AuthSeeder.SeedRolesAndAdminAsync(serviceProvider);
         await ShowsSeeder.SeedShowsDataAsync(serviceProvider);
         
+        await MainDataSeeder.SeedMainDataAsync(serviceProvider);
+        
     }
 }
