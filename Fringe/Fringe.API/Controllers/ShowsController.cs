@@ -1,5 +1,5 @@
 ﻿using System.Security.Claims;
-using Fringe.Domain.DTOs;
+using Fringe.Domain.DTOs.ShowDTOs;
 using Fringe.Service.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -8,71 +8,62 @@ namespace Fringe.API.Controllers;
 
 [Route("api/[controller]")]
 [ApiController]
-public class VenuesController : ControllerBase
+public class ShowsController : ControllerBase
 {
-    private readonly IVenueService _venueService;
+    private readonly IShowService _showService;
     private readonly ILogger<ShowsController> _logger;
 
-    public VenuesController(IVenueService venueService, ILogger<ShowsController> logger)
+    public ShowsController(IShowService showService, ILogger<ShowsController> logger)
     {
-        _venueService = venueService;
+        _showService = showService;
         _logger = logger;
     }
-    
 
-    /**Retrieves a list of all venues along with their related location and type information.
-    <returns>List of VenueDto</returns> **/
+    // GET: api/shows
     [HttpGet]
     [ProducesResponseType(StatusCodes.Status200OK)]
-    public async Task<IActionResult> GetAllVenues()
+    public async Task<IActionResult> GetAllShows()
     {
-        var venues = await _venueService.GetAllVenuesAsync();
-        return Ok(venues);
+        var shows = await _showService.GetAllShowsAsync();
+        return Ok(shows);
     }
-    
-    
-    // Gets a venue by ID
+
+    // GET: api/shows/5
     [HttpGet("{id}")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public async Task<IActionResult> GetVenueById(int id)
+    public async Task<IActionResult> GetShowById(int id)
     {
-        var venue = await _venueService.GetVenueByIdAsync(id);
-        if (venue == null)
+        var show = await _showService.GetShowByIdAsync(id);
+        if (show == null)
             return NotFound();
-        return Ok(venue);
+
+        return Ok(show);
     }
-    
-    
-    // POST - Save a venue record
+
+    // POST: api/shows
     [HttpPost]
     [Authorize(Roles = "Admin,Manager")]
     [ProducesResponseType(StatusCodes.Status201Created)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     [ProducesResponseType(StatusCodes.Status403Forbidden)]
-    public async Task<IActionResult> CreateVenue([FromBody] CreateVenueDto dto)
+    public async Task<IActionResult> CreateShow([FromBody] CreateShowDto createShowDto)
     {
         try
         {
             var creatorUserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            if (string.IsNullOrEmpty(creatorUserId))
-            {
-                return BadRequest("User ID claim is missing");
-            }
-            var createVenue = await _venueService.CreateVenueAsync(dto, creatorUserId);
-            return CreatedAtAction(nameof(GetVenueById), new { id = createVenue.VenueId }, createVenue);
+            var createdShow = await _showService.CreateShowAsync(createShowDto, creatorUserId);
+            return CreatedAtAction(nameof(GetShowById), new { id = createdShow.ShowId }, createdShow);
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "Error creating venue");
+            _logger.LogError(ex, "Error creating show");
             return BadRequest(ex.Message);
         }
-       
     }
-    
-    
-    //PUT - Updates a venue by ID.</summary>
+
+    // PUT: api/shows/5
     [HttpPut("{id}")]
     [Authorize(Roles = "Admin,Manager")]
     [ProducesResponseType(StatusCodes.Status200OK)]
@@ -80,53 +71,60 @@ public class VenuesController : ControllerBase
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     [ProducesResponseType(StatusCodes.Status403Forbidden)]
-    public async Task<IActionResult> UpdateVenue(int id, [FromBody] CreateVenueDto dto)
+    public async Task<IActionResult> UpdateShow(int id, [FromBody] UpdateShowDto updateShowDto)
     {
         try
         {
             var updaterUserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            var updatedVenue = await _venueService.UpdateVenueAsync(id, dto, updaterUserId);
-            return Ok(updatedVenue);
+            var updatedShow = await _showService.UpdateShowAsync(id, updateShowDto, updaterUserId);
+            return Ok(updatedShow);
         }
         catch (InvalidOperationException ex) when (ex.Message.Contains("not found"))
         {
             return NotFound(ex.Message);
         }
-        catch (InvalidOperationException ex)
+        catch (Exception ex)
         {
-            _logger.LogError(ex, "Error updating venue");
+            _logger.LogError(ex, "Error updating show");
             return BadRequest(ex.Message);
         }
     }
-    
-    
-    
-    //Deletes a venue by ID
+
+    // DELETE: api/shows/5
     [HttpDelete("{id}")]
     [Authorize(Roles = "Admin,Manager")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     [ProducesResponseType(StatusCodes.Status403Forbidden)]
-    public async Task<IActionResult> DeleteVenue(int id)
+    public async Task<IActionResult> DeleteShow(int id)
     {
         try
         {
-            await _venueService.DeleteVenueAsync(id);
+            await _showService.DeleteShowAsync(id);
             return NoContent();
         }
         catch (InvalidOperationException ex)
         {
-            _logger.LogError(ex, "Error deleting venue");
             return NotFound(ex.Message);
         }
     }
-    
-    
-    
-    
-    
-    
-    
-    
+
+    // GET: api/shows/age-restrictions
+    [HttpGet("age-restrictions")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    public async Task<IActionResult> GetAgeRestrictions()
+    {
+        var ageRestrictions = await _showService.GetAllAgeRestrictionsAsync();
+        return Ok(ageRestrictions);
+    }
+
+    // GET: api/shows/show-types
+    [HttpGet("show-types")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    public async Task<IActionResult> GetShowTypes()
+    {
+        var showTypes = await _showService.GetAllShowTypesAsync();
+        return Ok(showTypes);
+    }
 }

@@ -4,6 +4,7 @@ using Fringe.Domain;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Fringe.Domain.Migrations
 {
     [DbContext(typeof(FringeDbContext))]
-    partial class FringeDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250330013316_VenueAndLocationTables")]
+    partial class VenueAndLocationTables
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -21,32 +24,6 @@ namespace Fringe.Domain.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
-
-            modelBuilder.Entity("Fringe.Domain.Entities.AgeRestrictionLookup", b =>
-                {
-                    b.Property<int>("AgeRestrictionId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasColumnName("agerestrictionid");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("AgeRestrictionId"));
-
-                    b.Property<string>("Code")
-                        .IsRequired()
-                        .HasMaxLength(10)
-                        .HasColumnType("nvarchar(10)")
-                        .HasColumnName("code");
-
-                    b.Property<string>("Description")
-                        .IsRequired()
-                        .HasMaxLength(200)
-                        .HasColumnType("nvarchar(200)")
-                        .HasColumnName("description");
-
-                    b.HasKey("AgeRestrictionId");
-
-                    b.ToTable("AgeRestrictionLookup", (string)null);
-                });
 
             modelBuilder.Entity("Fringe.Domain.Entities.ApplicationUser", b =>
                 {
@@ -285,146 +262,6 @@ namespace Fringe.Domain.Migrations
                         .IsUnique();
 
                     b.ToTable("Roles");
-                });
-
-            modelBuilder.Entity("Fringe.Domain.Entities.Show", b =>
-                {
-                    b.Property<int>("ShowId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasColumnName("showid");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ShowId"));
-
-                    b.Property<bool>("Active")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("bit")
-                        .HasDefaultValue(true)
-                        .HasColumnName("active");
-
-                    b.Property<int>("AgeRestrictionId")
-                        .HasColumnType("int")
-                        .HasColumnName("agerestrictionid");
-
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("datetime2")
-                        .HasColumnName("createdat");
-
-                    b.Property<int>("CreatedById")
-                        .HasColumnType("int")
-                        .HasColumnName("createdbyid");
-
-                    b.Property<string>("Description")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)")
-                        .HasColumnName("description");
-
-                    b.Property<DateTime>("EndDate")
-                        .HasColumnType("datetime2")
-                        .HasColumnName("enddate");
-
-                    b.Property<string>("ImagesUrl")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)")
-                        .HasColumnName("imagesurl");
-
-                    b.Property<string>("ShowName")
-                        .IsRequired()
-                        .HasMaxLength(150)
-                        .HasColumnType("nvarchar(150)")
-                        .HasColumnName("showname");
-
-                    b.Property<int>("ShowTypeId")
-                        .HasColumnType("int")
-                        .HasColumnName("showtypeid");
-
-                    b.Property<DateTime>("StartDate")
-                        .HasColumnType("datetime2")
-                        .HasColumnName("startdate");
-
-                    b.Property<int?>("TicketTypeId")
-                        .HasColumnType("int")
-                        .HasColumnName("tickettypeid");
-
-                    b.Property<DateTime?>("UpdatedAt")
-                        .HasColumnType("datetime2")
-                        .HasColumnName("updatedat");
-
-                    b.Property<int?>("UpdatedId")
-                        .HasColumnType("int")
-                        .HasColumnName("updatedid");
-
-                    b.Property<int>("VenueId")
-                        .HasColumnType("int")
-                        .HasColumnName("venueid");
-
-                    b.Property<string>("VideosUrl")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)")
-                        .HasColumnName("videosurl");
-
-                    b.Property<string>("WarningDescription")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)")
-                        .HasColumnName("warningdescription");
-
-                    b.HasKey("ShowId");
-
-                    b.HasIndex("AgeRestrictionId");
-
-                    b.HasIndex("ShowTypeId");
-
-                    b.HasIndex("TicketTypeId");
-
-                    b.HasIndex("VenueId");
-
-                    b.ToTable("Shows");
-                });
-
-            modelBuilder.Entity("Fringe.Domain.Entities.ShowTypeLookup", b =>
-                {
-                    b.Property<int>("TypeId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasColumnName("typeid");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("TypeId"));
-
-                    b.Property<string>("ShowType")
-                        .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)")
-                        .HasColumnName("showtype");
-
-                    b.HasKey("TypeId");
-
-                    b.ToTable("ShowTypeLookup", (string)null);
-                });
-
-            modelBuilder.Entity("Fringe.Domain.Entities.TicketType", b =>
-                {
-                    b.Property<int>("TicketTypeId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasColumnName("tickettypeid");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("TicketTypeId"));
-
-                    b.Property<string>("Description")
-                        .IsRequired()
-                        .HasMaxLength(200)
-                        .HasColumnType("nvarchar(200)")
-                        .HasColumnName("description");
-
-                    b.Property<string>("TypeName")
-                        .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)")
-                        .HasColumnName("typename");
-
-                    b.HasKey("TicketTypeId");
-
-                    b.ToTable("TicketTypes");
                 });
 
             modelBuilder.Entity("Fringe.Domain.Entities.Venue", b =>
@@ -675,39 +512,6 @@ namespace Fringe.Domain.Migrations
                         .IsRequired();
 
                     b.Navigation("User");
-                });
-
-            modelBuilder.Entity("Fringe.Domain.Entities.Show", b =>
-                {
-                    b.HasOne("Fringe.Domain.Entities.AgeRestrictionLookup", "AgeRestrictionLookup")
-                        .WithMany()
-                        .HasForeignKey("AgeRestrictionId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("Fringe.Domain.Entities.ShowTypeLookup", "ShowTypeLookup")
-                        .WithMany()
-                        .HasForeignKey("ShowTypeId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("Fringe.Domain.Entities.TicketType", "TicketType")
-                        .WithMany()
-                        .HasForeignKey("TicketTypeId");
-
-                    b.HasOne("Fringe.Domain.Entities.Venue", "Venue")
-                        .WithMany()
-                        .HasForeignKey("VenueId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("AgeRestrictionLookup");
-
-                    b.Navigation("ShowTypeLookup");
-
-                    b.Navigation("TicketType");
-
-                    b.Navigation("Venue");
                 });
 
             modelBuilder.Entity("Fringe.Domain.Entities.Venue", b =>
