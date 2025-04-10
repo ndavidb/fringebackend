@@ -92,6 +92,7 @@ builder.Services.AddCors(options =>
                 //Local development
                 "http://localhost:3000",
                 "http://localhost:3001",
+                "https://fringefrontend.vercel.app",
                 //Production
                 "https://fringebooking-dev.azurewebsites.net")
             .AllowAnyHeader()
