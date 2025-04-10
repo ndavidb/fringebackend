@@ -101,7 +101,7 @@ builder.Services.AddCors(options =>
 
 // Add database context
 builder.Services.AddDbContext<FringeDbContext>(options =>
-    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+    options.UseSqlServer(builder.Configuration.GetConnectionString("AZURE_SQL_CONNECTIONSTRING")));
 
 // Register repositories
 builder.Services.AddScoped<IRoleRepository, RoleRepository>();
