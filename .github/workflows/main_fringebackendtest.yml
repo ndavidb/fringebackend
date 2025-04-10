@@ -21,12 +21,15 @@ jobs:
           dotnet-version: '8.x'
 
       - name: Restore dependencies
+        working-directory: Fringe.API
         run: dotnet restore
 
       - name: Build with dotnet
+        working-directory: Fringe.API
         run: dotnet build --configuration Release --no-restore
 
       - name: Run tests
+        working-directory: Fringe.API
         run: dotnet test --no-restore --verbosity normal
 
       - name: Publish Fringe.API
